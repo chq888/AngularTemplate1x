@@ -1,0 +1,29 @@
+Radio button
+
+<div style="margin-bottom: 25px" class="input-group" ng-class="{'has-error': loginform.password.$invalid}">
+  <div style="display: inline-block; width: 80px; margin: auto" ng-repeat="company in companys">
+    <div style="text-align: center;">
+      <input style="margin: auto" type="radio" name="companyId" value="{{company.COMPANY_KEY}}" ng-model="$parent.LOGIN_COMPANY_KEY"  />
+    </div>
+  </div>
+</div>
+
+
+Combobox
+
+<div style="margin-bottom: 25px" class="input-group" ng-class="{'has-error': loginform.companySelect.$invalid}">
+    <select class="form-control" name="companySelect" id="companySelect" ng-model="LOGIN_COMPANY_KEY" ng-required="true">
+      <option value="" disabled selected hidden>Please choose...</option>
+      <option ng-repeat="option in companys" value="{{option.COMPANY_KEY}}">{{option.NAME}}</option>
+    </select>
+</div>
+
+
+---
+$scope.showFirstName = function(){
+if(angular.isDefined($scope.firstName)){
+  alert("Name is: " + $scope.firstName);
+}else{
+  alert("Name is empty, please enter a value");
+}
+}
