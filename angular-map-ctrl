@@ -1,4 +1,30 @@
-angular.module("safeTrust")
+        <ui-gmap-google-map center="map.center"
+                            zoom="map.zoom"
+                            dragging="map.dragging"
+                            bounds="map.bounds"
+                            events="map.events"
+                            options="map.options"
+                            pan="true"
+                            control="map.control">
+          <!--to add as a map control -->
+          <ui-gmap-search-box options="searchbox.options" template="searchbox.template"
+                              events="searchbox.events" position="searchbox.position"></ui-gmap-search-box>
+          <ui-gmap-markers idkey="map.idkey" models="map.markers" coords="'self'" icon="'icon'"
+                           click="'onClicked'"></ui-gmap-markers>
+          <ui-gmap-drag-zoom keyboardkey="'alt'"></ui-gmap-drag-zoom>
+
+          <!--marker for clicked position can not put google.map.animations.BOUNCE , since it is not initiaized yet-->
+          <!--DISABLED ANIMATION on MarkerLABEL due to Google SDK V3 bug, see MarkerLabelChildModel.setOption -->
+          <!--<div ng-init="opts = {animation:1}">-->
+          <ui-gmap-marker coords="map.clickedMarker" idKey="map.clickedMarker.id" options="map.clickedMarker.options">
+          </ui-gmap-marker>
+
+        </ui-gmap-google-map>
+
+
+
+
+angular.module("")
 .config(['uiGmapGoogleMapApiProvider', function (GoogleMapApi) {
   GoogleMapApi.configure({
     //key: '',
