@@ -1,0 +1,254 @@
+angular.module("safeTrust")
+.config(['uiGmapGoogleMapApiProvider', function (GoogleMapApi) {
+  GoogleMapApi.configure({
+    //key: '',
+    v: '3.17',
+    libraries: 'places'
+  });
+}])
+.run(['$templateCache', function ($templateCache) {
+  $templateCache.put('searchbox.tpl.html', '<input id="pac-input" class="pac-controls" type="text" placeholder="Search">');
+  $templateCache.put('window.tpl.html', '<div ng-controller="WindowCtrl" ng-init="showPlaceDetails(parameter)">{{place.name}}</div>');
+}])
+
+.controller('showMapCtrl', ['$scope', '$uibModal', 'userServices', 'notifyService', 'localStorageService', 'authService', 'uiGmapGoogleMapApi', '$uibModalInstance', 'location', 'NgMap', function ($scope, $uibModal, userServices, notifyService, localStorageService, authService, GoogleMapApi, $uibModalInstance, location, NgMap) {
+  $scope.context = this;
+  var context = $scope.context;
+  context.types = "['establishment']";
+  var lat = 45;
+  var lng = -73;
+  context.pos = [lat, lng];
+  context.currentPos = context.pos;
+
+  /*
+  GoogleMapApi.then(function (maps) {
+    
+    maps.visualRefresh = true;
+    
+    $scope.defaultBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(40.82148, -73.66450),
+      new google.maps.LatLng(40.66541, -74.31715));
+
+    $scope.map.bounds = {
+      northeast: {
+        latitude: $scope.defaultBounds.getNorthEast().lat(),
+        longitude: $scope.defaultBounds.getNorthEast().lng()
+      },
+      southwest: {
+        latitude: $scope.defaultBounds.getSouthWest().lat(),
+        longitude: -$scope.defaultBounds.getSouthWest().lng()
+
+      }
+    }
+    $scope.searchbox.options.bounds = new google.maps.LatLngBounds($scope.defaultBounds.getNorthEast(), $scope.defaultBounds.getSouthWest());
+  });
+
+
+  angular.extend($scope, {
+    window: {
+      show: false,
+      options: {
+        pixelOffset: { width: 0, height: -40 }
+      },
+      templateurl: 'window.tpl.html',
+      templateparameter: {},
+      closeClick: function () {
+        $scope.window.show = false;
+      }
+    },
+    map: {
+      control: {},
+      center: {
+        latitude: 40.74349,
+        longitude: -73.990822
+      },
+      zoom: 8,
+      dragging: false,
+      bounds: {},
+      markers: [],
+      idkey: 'place_id',
+        clickedMarker: {
+          id: 0,
+          options:{
+          }
+        },
+      events: {
+        idle: function (map) {
+
+        },
+        click: function (mapModel, eventName, originalEventArgs) {
+          // 'this' is the directive's scope
+          var e = originalEventArgs[0];
+          var lat = e.latLng.lat(),
+            lon = e.latLng.lng();
+          $scope.map.clickedMarker = {
+            id: 0,
+            options: {
+              labelContent: '',
+              labelClass: "marker-labels",
+              labelAnchor: "50 0"
+            },
+            latitude: lat,
+            longitude: lon
+          };
+          //scope apply required because this event handler is outside of the angular domain
+          $scope.$evalAsync();
+        },
+        dragend: function (map) {
+          //update the search box bounds after dragging the map
+          var bounds = map.getBounds();
+          var ne = bounds.getNorthEast();
+          var sw = bounds.getSouthWest();
+          $scope.searchbox.options.bounds = new google.maps.LatLngBounds(sw, ne);
+          //$scope.searchbox.options.visible = true;
+        }
+      }
+    },
+    searchbox: {
+      template: 'searchbox.tpl.html',
+      options: {
+        autocomplete: true,
+        types: ['(cities)']
+        //componentRestrictions: { country: 'fr' }
+      },
+      events: {
+        place_changed: function (autocomplete) {
+          place = autocomplete.getPlace();
+          if (place.address_components) {
+            newMarkers = [];
+            var bounds = new google.maps.LatLngBounds();
+            var marker = {
+              idKey: place.place_id,
+              place_id: place.place_id,
+              name: place.address_components[0].long_name,
+              latitude: place.geometry.location.lat(),
+              longitude: place.geometry.location.lng(),
+              templateurl: 'window.tpl.html',
+              templateparameter: place,
+              events: {
+                click: function (marker) {
+                  $scope.window.coords = {
+                    latitude: marker.model.latitude,
+                    longitude: marker.model.longitude
+                  }
+                  $scope.window.templateparameter = marker.model.templateparameter;
+                  $scope.window.show = true;
+
+                }
+              }
+            };
+
+            newMarkers.push(marker);
+
+            bounds.extend(place.geometry.location);
+
+            $scope.map.bounds = {
+              northeast: {
+                latitude: bounds.getNorthEast().lat(),
+                longitude: bounds.getNorthEast().lng()
+              },
+              southwest: {
+                latitude: bounds.getSouthWest().lat(),
+                longitude: bounds.getSouthWest().lng()
+              }
+            }
+
+            $scope.map.markers = newMarkers;
+          } else {
+            console.log("do something else with the search string: " + place.name);
+          }
+        }
+      }
+    }
+  });
+
+  */
+
+  context.placeChanged = function () {
+    var place = this.getPlace();
+    lat = place.geometry.location.lat();
+    lng = place.geometry.location.lng();
+    context.pos = [lat, lng];
+    context.map.setCenter(place.geometry.location);
+  }
+
+  NgMap.getMap().then(function (map) {
+    context.map = map;
+    var c = map.getCenter();
+    if (c !== undefined) {
+      lat = c.lat();
+      lng = c.lng();
+      context.pos = [lat, lng];
+    }
+  });
+
+  $scope.$on('mapInitialized', function (event, map) {
+    window.setTimeout(function () {
+      var c = map.getCenter();
+      if (c !== undefined) {
+        window.google.maps.event.trigger(map, 'resize');
+        map.setCenter(c);
+      }
+    }, 100);
+  });
+  context.getPosition = function (event) {
+    lat = event.latLng.lat();
+    lng = event.latLng.lng();
+    context.pos = [lat, lng];
+  };
+
+
+  function getLocationSuccFn(position) {
+    lat = position.coords.latitude;
+    lng = position.coords.longitude;
+    context.pos = [lat, lng];
+    context.currentPos = context.pos;
+  }
+
+  function getLocationErrFn(error) {
+    console.log("fail");
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        console.log("User denied the request for Geolocation.");
+        break;
+      case error.POSITION_UNAVAILABLE:
+        console.log("Location information is unavailable.");
+        break;
+      case error.TIMEOUT:
+        console.log("The request to get user location timed out.");
+        break;
+      case error.UNKNOWN_ERROR:
+        console.log("An unknown error occurred.");
+        break;
+    }
+  }
+
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(getLocationSuccFn, getLocationErrFn, { timeout: 10000 });
+    }
+  }
+
+  function init() {
+    loadData();
+  }
+  init();
+
+  function loadData() {
+    getLocation();
+
+    if (location !== '') {
+      context.pos = location;
+      context.currentPos = location;
+    }
+  }
+
+  context.cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
+
+  context.save = function () {
+    $uibModalInstance.close(context.pos);
+  };
+
+}]);
