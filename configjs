@@ -1,0 +1,27 @@
+
+
+
+There is no supporting ugilify(minify) tools for ES6 Syntax. you should be build gulp task after babel compile (es6 -> es5)
+
+1.Install packages
+
+npm install gulp-babel babel-preset-es2015
+
+2.change your code as below.
+
+    var gulp = require("gulp");
+    var concat = require("gulp-concat");
+    var uglify = require("gulp-uglify");
+    var babel  = require('gulp-babel');
+
+    gulp.task("scripts", function() {
+        return gulp.src(["./gulp-crash-test.js"])
+    .pipe(babel({presets: ['es2015']}))
+    .pipe(concat("gulp-crash-test.minjs"))
+    .pipe(uglify().on('error', function(e){
+         console.log(e);
+    }))
+    .pipe(gulp.dest("./"))
+    });
+
+
