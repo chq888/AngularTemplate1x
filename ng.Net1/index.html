@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html ng-app="app">
+<head>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="//code.angularjs.org/1.2.18/angular.js"></script>
+  <script src="//code.angularjs.org/1.2.18/angular-route.js"></script>
+  <script src="app.js"></script>
+</head>
+<body>
+  <div class="panel panel-success" ng-controller="Diary.AddController as vm">
+    <div class="panel-heading">
+      <strong>Diary.AddController</strong>
+    </div>
+    <div class="panel-body">vm.diaryEntry: {{ vm.diaryEntry | json }}</div>
+  </div>
+  <div class="panel panel-info" ng-controller="Diary.EditController as vm">
+    <div class="panel-heading">
+      <strong>Diary.EditController</strong>
+    </div>
+    <div class="panel-body">vm.diaryEntry: {{ vm.diaryEntry | json }}</div>
+  </div>
+</body>
+</html>

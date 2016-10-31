@@ -5,6 +5,12 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ng.Net1", "ng.Net1\ng.Net1.csproj", "{0AB0A3F4-F35F-4F99-8F53-E1DDD4A2227F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BaseController", "BaseController", "{87EAA524-EFBA-410E-96B5-B22ADF52812A}"
+	ProjectSection(SolutionItems) = preProject
+		app.js = app.js
+		index.html = index.html
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
